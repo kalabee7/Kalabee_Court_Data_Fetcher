@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Court Case Search - Legal Information Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-balance-scale me-2"></i>
+                    Court Case Search
+                </a>
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link" href="/dashboard">
+                        <i class="fas fa-chart-bar me-1"></i>Dashboard
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10">
+                    <!-- Header -->
+                    <div class="text-center mb-5">
+                        <h1 class="display-5 fw-bold text-primary">
+                            <i class="fas fa-gavel me-3"></i>
+                            Court Case Information System
+                        </h1>
+                        <p class="lead text-muted">
+                            Search for case details from Delhi High Court
+                        </p>
+                    </div>
+
+                    <!-- Flash Messages -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                                    <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }} me-2"></i>
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <!-- Search Form -->
+                    <div class="card shadow-lg">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-search me-2"></i>
+                                Search Case Details
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="POST" action="/search" id="searchForm">
+                                <div class="row">
+                                    <!-- Case Type -->
+                                    <div class="col-md-4 mb-3">
+                                        <label for="case_type" class="form-label fw-bold">
+                                            <i class="fas fa-folder me-2"></i>Case Type
+                                        </label>
+                                        <select class="form-select" id="case_type" name="case_type" required>
+                                            <option value="">Select Case Type</option>
+                                            <option value="Civil">Civil Suit</option>
+                                            <option value="Criminal">Criminal Case</option>
+                                            <option value="Writ">Writ Petition</option>
+                                            <option value="PIL">Public Interest Litigation</option>
+                                            <option value="Appeal">Appeal</option>
+                                            <option value="Revision">Revision</option>
+                                            <option value="Bail">Bail Application</option>
+                                            <option value="Matrimonial">Matrimonial</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Case Number -->
+                                    <div class="col-md-4 mb-3">
+                                        <label for="case_number" class="form-label fw-bold">
+                                            <i class="fas fa-hashtag me-2"></i>Case Number
+                                        </label>
+                                        <input type="text" class="form-control" id="case_number" 
+                                               name="case_number" placeholder="e.g., 12345" 
+                                               pattern="[0-9]+" title="Please enter only numbers" required>
+                                        <div class="form-text">Enter numbers only</div>
+                                    </div>
+
+                                    <!-- Filing Year -->
+                                    <div class="col-md-4 mb-3">
+                                        <label for="filing_year" class="form-label fw-bold">
+                                            <i class="fas fa-calendar me-2"></i>Filing Year
+                                        </label>
+                                        <input type="number" class="form-control" id="filing_year" 
+                                               name="filing_year" min="1950" max="2025" 
+                                               placeholder="e.g., 2024" required>
+                                        <div class="form-text">Year between 1950-2025</div>
+                                    </div>
+                                </div>
+
+                                <!-- Search Button -->
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5" id="searchBtn">
+                                        <i class="fas fa-search me-2"></i>
+                                        Search Case
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Information Card -->
+                    <div class="card mt-4 border-info">
+                        <div class="card-body">
+                            <h6 class="card-title text-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Important Information
+                            </h6>
+                            <ul class="list-unstyled mb-0">
+                                <li><i class="fas fa-check text-success me-2"></i>This system searches Delhi High Court records</li>
+                                <li><i class="fas fa-check text-success me-2"></i>All searches are logged for system improvement</li>
+                                <li><i class="fas fa-check text-success me-2"></i>PDF documents can be downloaded when available</li>
+                                <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>This is a demo system - actual court integration required</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">
+                <i class="fas fa-balance-scale me-2"></i>
+                Court Case Search System - Demo Version
+            </p>
+            <p class="mb-0 text-muted">
+                Built for educational purposes - Not affiliated with any court
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Add loading state to search button
+        document.getElementById('searchForm').addEventListener('submit', function() {
+            const button = document.getElementById('searchBtn');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Searching...';
+            button.disabled = true;
+        });
+
+        // Auto-fill current year
+        const currentYear = new Date().getFullYear();
+        document.getElementById('filing_year').value = currentYear;
+    </script>
+</body>
+</html>
+
